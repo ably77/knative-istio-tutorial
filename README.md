@@ -40,7 +40,7 @@ webhook-568c4d697-bzcdz                  1/1     Running   0          14m
 ```
 
 ### Install Istio
-Now that knative-serving components are up, we can move on to deploying Istio. The commands below will guide you through both default and OpenShift install processes
+Now that knative-serving components are up, we can move on to deploying Istio. The commands below will guide us through both default and OpenShift install processes
 
 Default Istio install
 ```
@@ -54,10 +54,10 @@ oc new-project istio-system
 oc adm policy add-scc-to-group anyuid system:serviceaccounts:istio-system
 istioctl install --set profile=openshift -y
 ```
-As you can see, there is extra configuration necessary for OpenShift Istio deployments because of the use of Security Context Constraints (SCCs) in OpenShift. Istio components require the use of UID 1337 which is reserved for the sidecar proxy component. For this reason in this tutorial we will need to allow the `anyuid` SCC to be used anywhere Istio is used, rather than the default `restricted` SCC.
+As we can see, there is extra configuration necessary for OpenShift Istio deployments because of the use of Security Context Constraints (SCCs) in OpenShift. Istio components require the use of UID 1337 which is reserved for the sidecar proxy component. For this reason in this tutorial we will need to allow the `anyuid` SCC to be used anywhere Istio is used, rather than the default `restricted` SCC.
 
 #### Using Istio mTLS capabilities
-Since there are some networking communications between knative-serving namespace and the namespace where your services running on, you need additional preparations for mTLS enabled environment.
+Since there are some networking communications between knative-serving namespace and the namespace where our services running on, we need additional preparations for mTLS enabled environment.
 
 Enable sidecar container on `knative-serving` system namespace.
 ```
@@ -95,7 +95,7 @@ In order for Istio to recognize workloads, it is necessary to label the namespac
 kubectl label namespace default istio-injection=enabled
 ```
 
-Additionally for OpenShift users, the istio-cni NetworkAttachment must be added to each namespace where you plan to deploy istio-enabled services
+Additionally for OpenShift users, the istio-cni NetworkAttachment must be added to each namespace where we plan to deploy istio-enabled services
 ```
 cat <<EOF | oc -n default create -f -
 apiVersion: "k8s.cni.cncf.io/v1"
@@ -106,7 +106,7 @@ EOF
 ```
 
 #### Create first knative hello-world service
-To deploy your first knative service, run the following command
+To deploy our first knative service, run the following command
 ```
 kn service -n default create hello \
 --image gcr.io/knative-samples/helloworld-go \
@@ -149,11 +149,11 @@ NAME    URL                                LATEST        AGE   CONDITIONS   READ
 hello   http://hello.default.example.com   hello-world   38m   3 OK / 3     True    
 ```
 
-#### Trigger your knative service
-There are multiple methods to triggering your knative-service through the istio-ingressgateway. Below will give a few examples
+#### Trigger our knative service
+There are multiple methods to triggering our knative-service through the istio-ingressgateway. Below will give a few examples
 
 ##### Trigger knative service directly through external LB
-Get your istio-ingressgateway IP
+Get our istio-ingressgateway IP
 ```
 kubectl get svc -n istio-system
 ```
@@ -172,7 +172,7 @@ curl the ingress gateway with the correct host match:
 curl -v 104.154.165.58 -H "Host: hello.default.example.com"
 ```
 
-The output should look similar to below. Here you can see that the request was served by envoy `x-envoy-upstream-service-time: 2677`
+The output should look similar to below. Here we can see that the request was served by envoy `x-envoy-upstream-service-time: 2677`
 ```
 % curl -v 104.154.165.58 -H "Host: hello.default.example.com"
 *   Trying 104.154.165.58...
@@ -195,7 +195,7 @@ Hello World!
 * Closing connection 0
 ```
 
-You can double check that the pod has the istio sidecar proxy attached by checking `kubectl get pods` and using `kubectl describe` to check the pod events:
+We can double check that the pod has the istio sidecar proxy attached by checking `kubectl get pods` and using `kubectl describe` to check the pod events:
 ```
 % k get pods                                                 
 NAME                                      READY   STATUS    RESTARTS   AGE
@@ -225,14 +225,14 @@ Events:
 ```
 
 ##### Trigger knative service internally
-If triggering the knative service through the external LB is not an option, below will guide you through how to do so internally
+If triggering the knative service through the external LB is not an option, below will guide us through how to do so internally
 
 Deploy sleep app to run curl commands from:
 ```
 kubectl create -f https://raw.githubusercontent.com/istio/istio/master/samples/sleep/sleep.yaml -n default
 ```
 
-Get your knative-local-gateway CLUSTER-IP
+Get our knative-local-gateway CLUSTER-IP
 ```
 kubectl get svc -n istio-system
 ```
@@ -251,7 +251,7 @@ Exec into sleep container and curl the knative-local-gateway
 kubectl exec deploy/sleep -- curl -v -H "Host: hello.default.example.com" 10.35.242.59
 ```
 
-The output should look similar to below. Here you can see that the request was served by envoy `x-envoy-upstream-service-time: 2237`
+The output should look similar to below. Here we can see that the request was served by envoy `x-envoy-upstream-service-time: 2237`
 ```
 % kubectl exec deploy/sleep -- curl -v -H "Host: hello.default.example.com" 10.35.242.59
 *   Trying 10.35.242.59:80...
@@ -278,18 +278,18 @@ The output should look similar to below. Here you can see that the request was s
 ```
 
 ### Conclusion
-Congrats! At this point you have successfully
+Congrats! At this point we have successfully
 - Installed knative-serving
 - Installed Istio
 - Configured knative and Istio together
-- Deployed your first serverless knative app
-- Triggered your serverless app through Istio externally and internally!
+- Deployed our first serverless knative app
+- Triggered our serverless app through Istio externally and internally!
 
 ### Next Steps - Install Gloo Mesh
 
 [Gloo Mesh](https://docs.solo.io/gloo-mesh/latest/) is a Kubernetes-native management plane that enables configuration and operational management of multiple heterogeneous service meshes across multiple clusters through a unified API. The Gloo Mesh API integrates with the leading service meshes and abstracts away differences between their disparate API's, allowing users to configure a set of different service meshes through a single API. Gloo Mesh is engineered with a focus on its utility as an operational management tool, providing both graphical and command line UIs, observability features, and debugging tools.
 
-Once gloo-mesh is deployed and the clusters registered, you can see our hello-world instance workloads and destinations in the mesh updated and removed as the serverless function is scaled up and then scaled down to zero.
+Once gloo-mesh is deployed and the clusters registered, we can see our hello-world instance workloads and destinations in the mesh updated and removed as the serverless function is scaled up and then scaled down to zero.
 
 ![](https://github.com/ably77/knative-istio-tutorial/raw/main/images/gm1.png)
 
