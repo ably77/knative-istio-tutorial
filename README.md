@@ -277,13 +277,84 @@ The output should look similar to below. Here we can see that the request was se
 * Connection #0 to host 10.35.242.59 left intact
 ```
 
+#### Watch your service scale to zero
+```
+kubectl get pod -l serving.knative.dev/service=hello -w
+```
+
+It may take up to 2 minutes for your Pods to scale down. Pinging your service again will reset this timer. Output should look similar to below
+```
+% kubectl get pod -l serving.knative.dev/service=hello -w
+NAME                                      READY   STATUS    RESTARTS   AGE
+hello-world-deployment-676674dc86-kl8mk   3/3     Running   0          8s
+hello-world-deployment-676674dc86-kl8mk   3/3     Terminating   0          64s
+hello-world-deployment-676674dc86-kl8mk   2/3     Terminating   0          67s
+hello-world-deployment-676674dc86-kl8mk   0/3     Terminating   0          97s
+hello-world-deployment-676674dc86-kl8mk   0/3     Terminating   0          103s
+hello-world-deployment-676674dc86-kl8mk   0/3     Terminating   0          103s
+```
+
+#### Traffic Splitting
+See [Traffic Splitting](https://knative.dev/docs/getting-started/first-traffic-split/) knative docs for reference
+
+Create a revision
+```
+kn service update hello \
+--env TARGET=Knative \
+--revision-name=knative
+```
+
+Now you can curl our knative service through the istio gateway again and see that the output has changed from `Hello World!` to `Hello Knative!`:
+```
+% curl 104.154.165.58 -H "Host: hello.default.example.com" 
+Hello Knative!
+```
+
+List our revisions
+```
+kn revisions list
+```
+
+As you can see both of our revisions are there, but 100% of traffic is routing to our latest revision
+```
+% kn revisions list
+NAME            SERVICE   TRAFFIC   TAGS   GENERATION   AGE     CONDITIONS   READY   REASON
+hello-knative   hello     100%             2            2m44s   4 OK / 4     True    
+hello-world     hello                      1            144m    3 OK / 4     True    
+```
+
+Let's split traffic 50/50
+```
+kn service update hello \
+--traffic hello-world=50 \
+--traffic @latest=50
+```
+
+Verify traffic split
+```
+% kn revisions list        
+NAME            SERVICE   TRAFFIC   TAGS   GENERATION   AGE     CONDITIONS   READY   REASON
+hello-knative   hello     50%              2            4m19s   3 OK / 4     True    
+hello-world     hello     50%              1            145m    3 OK / 4     True    
+```
+
+Now we can curl our knative service again:
+```
+% curl 104.154.165.58 -H "Host: hello.default.example.com"
+Hello World!
+% curl 104.154.165.58 -H "Host: hello.default.example.com"
+Hello Knative!
+```
+
 ### Conclusion
 Congrats! At this point we have successfully
 - Installed knative-serving
 - Installed Istio
 - Configured knative and Istio together
 - Deployed our first serverless knative app
-- Triggered our serverless app through Istio externally and internally!
+- Triggered our serverless app through the service mesh externally and internally
+- Set up a knative revision
+- Split traffic between two revisions of a knative service 
 
 ## Next Steps - Install Gloo Mesh
 
