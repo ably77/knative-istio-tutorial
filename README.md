@@ -1,5 +1,5 @@
 # knative-istio-tutorial
-The purpose of this tutorial is to walk through the steps to install knative-serving, istio, and gloo-mesh(?) on Kubernetes. This guide will also provide the extra configuration components necessary to walk through the steps on OpenShift as well.
+The purpose of this tutorial is to walk through the steps to install knative-serving and Istio on Kubernetes. This guide will also provide the extra configuration components necessary to walk through the steps on OpenShift as well.
 
 ## Prerequisites
 - Kubernetes cluster up and authenticated to kubectl
