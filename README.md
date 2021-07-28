@@ -285,6 +285,18 @@ Congrats! At this point you have successfully
 - Deployed your first serverless knative app
 - Triggered your serverless app through Istio externally and internally!
 
+### Next Steps - Install Gloo Mesh
+
+[Gloo Mesh](https://docs.solo.io/gloo-mesh/latest/) is a Kubernetes-native management plane that enables configuration and operational management of multiple heterogeneous service meshes across multiple clusters through a unified API. The Gloo Mesh API integrates with the leading service meshes and abstracts away differences between their disparate API's, allowing users to configure a set of different service meshes through a single API. Gloo Mesh is engineered with a focus on its utility as an operational management tool, providing both graphical and command line UIs, observability features, and debugging tools.
+
+Once gloo-mesh is deployed and the clusters registered, you can see our hello-world instance workloads and destinations in the mesh updated and removed as the serverless function is scaled up and then scaled down to zero.
+
+![](https://github.com/ably77/knative-istio-tutorial/raw/main/images/gm1.png)
+
+![](https://github.com/ably77/knative-istio-tutorial/raw/main/images/gm2.png)
+
+
+
 
 
 
