@@ -54,7 +54,7 @@ oc new-project istio-system
 oc adm policy add-scc-to-group anyuid system:serviceaccounts:istio-system
 istioctl install --set profile=openshift -y
 ```
-As you can see, there is extra configuration necessary for OpenShift Istio deployments because of the use of Security Context Constraints (SCCs) in OpenShift. Istio components require the use of UID 1337 which is reserved for the sidecar proxy component. For this reason we will need to allow the `anyuid` SCC to be used anywhere Istio is used, rather than the default `restricted` SCC.
+As you can see, there is extra configuration necessary for OpenShift Istio deployments because of the use of Security Context Constraints (SCCs) in OpenShift. Istio components require the use of UID 1337 which is reserved for the sidecar proxy component. For this reason in this tutorial we will need to allow the `anyuid` SCC to be used anywhere Istio is used, rather than the default `restricted` SCC.
 
 #### Using Istio mTLS capabilities
 Since there are some networking communications between knative-serving namespace and the namespace where your services running on, you need additional preparations for mTLS enabled environment.
@@ -79,7 +79,7 @@ EOF
 ```
 
 #### Install the knative istio controller
-Knative uses a shared ingress Gateway to serve all incoming traffic within Knative service mesh, which is the knative-ingress-gateway Gateway under the knative-serving namespace. By default, we use Istio gateway service istio-ingressgateway under istio-system namespace as its underlying service.
+Knative uses a shared ingress Gateway to serve all incoming traffic within Knative service mesh, which is the knative-ingress-gateway Gateway under the knative-serving namespace. By default, we use Istio gateway service istio-ingressgateway under istio-system namespace as its underlying service. This can be configured to [use a non-default local gateway](https://knative.dev/docs/admin/install/installing-istio/#updating-the-config-istio-configmap-to-use-a-non-default-local-gateway) but for the purposes of this tutorial we will keep the default.
 
 Deploy the knative-istio-controller to integrate istio and knative
 ```
