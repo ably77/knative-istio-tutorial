@@ -1,7 +1,7 @@
 # knative-istio-tutorial
 The purpose of this tutorial is to walk through the steps to install knative-serving and Istio on Kubernetes. This guide will also provide the extra configuration components necessary to walk through the steps on OpenShift as well.
 
-### more on additional OpenShift configuration
+#### more on additional OpenShift configuration
 [See this link](https://istio.io/latest/docs/setup/platform-setup/openshift/) from the Istio documentation for more detail on the additional configuration required to run knative + istio. For the purposes of this repo, all general-purpose commands are led with `kubectl` and all OpenShift specific instructions are commands led with `oc` to provide more clarity
 
 ## Prerequisites
@@ -37,8 +37,6 @@ autoscaler-756797655b-qnpc2              1/1     Running   0          15m
 controller-7bccdf6fdb-tjcxz              1/1     Running   0          15m
 domain-mapping-65fd554865-8sbwc          1/1     Running   0          14m
 domainmapping-webhook-7ff8f59965-zwxlf   1/1     Running   0          14m
-net-istio-controller-799fb59fbf-fglzv    1/1     Running   0          13m
-net-istio-webhook-5d97d48d5b-pzk4m       2/2     Running   0          13m
 webhook-568c4d697-bzcdz                  1/1     Running   0          14m
 ```
 
@@ -81,7 +79,7 @@ spec:
 EOF
 ```
 
-#### Install the knative istio controller
+### Deploy the knative istio controller to integrate knative with istio
 Knative uses a shared ingress Gateway to serve all incoming traffic within Knative service mesh, which is the knative-ingress-gateway Gateway under the knative-serving namespace. By default, we use Istio gateway service istio-ingressgateway under istio-system namespace as its underlying service. This can be configured to [use a non-default local gateway](https://knative.dev/docs/admin/install/installing-istio/#updating-the-config-istio-configmap-to-use-a-non-default-local-gateway) but for the purposes of this tutorial we will keep the default.
 
 Deploy the knative-istio-controller to integrate istio and knative
@@ -288,7 +286,7 @@ Events:
   Normal  Started    42s   kubelet            Started container istio-proxy
 ```
 
-##### Trigger knative service internally
+#### Trigger knative service internally
 If triggering the knative service through the external LB is not an option, below will guide us through how to do so internally
 
 Deploy sleep app to run curl commands from:
