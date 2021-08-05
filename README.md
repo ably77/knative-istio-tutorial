@@ -1,6 +1,9 @@
 # knative-istio-tutorial
 The purpose of this tutorial is to walk through the steps to install knative-serving and Istio on Kubernetes. This guide will also provide the extra configuration components necessary to walk through the steps on OpenShift as well.
 
+### more on additional OpenShift configuration
+[See this link](https://istio.io/latest/docs/setup/platform-setup/openshift/) from the Istio documentation for more detail on the additional configuration required to run knative + istio. For the purposes of this repo, all general-purpose commands are led with `kubectl` and all OpenShift specific instructions are commands led with `oc` to provide more clarity
+
 ## Prerequisites
 - Kubernetes cluster up and authenticated to kubectl
 - `kn` CLI installed [see Installing kn](https://knative.dev/docs/client/install-kn/)
@@ -101,6 +104,42 @@ Following that, add the anyuid policy to `knative-serving` and deploy the net-is
 ```
 oc adm policy add-scc-to-group anyuid system:serviceaccounts:knative-serving
 oc apply -f https://github.com/knative/net-istio/releases/download/v0.24.0/net-istio.yaml
+```
+
+#### Validate
+To validate, you can see that the Istio sidecar was injected in the net-istio-webhook pod and would be showing as `2/2` 
+```
+% kubectl get pods -n knative-serving
+NAME                                    READY   STATUS    RESTARTS   AGE
+activator-67656dcbbb-l26mj              1/1     Running   0          27m
+autoscaler-df6856b64-96gv2              1/1     Running   0          27m
+controller-788796f49d-4xkfd             1/1     Running   0          27m
+domain-mapping-65f58c79dc-78824         1/1     Running   0          27m
+domainmapping-webhook-cc646465c-hv4hx   1/1     Running   0          27m
+net-istio-controller-799fb59fbf-78h6z   1/1     Running   0          20m
+net-istio-webhook-5d97d48d5b-mwkgv      2/2     Running   0          12m
+webhook-859796bc7-cskg4                 1/1     Running   0          27m
+```
+
+If you do a describe on the net-istio-webhook pod you can see more detail in the events
+```
+% k describe pod net-istio-webhook-5d97d48d5b-mwkgv -n knative-serving
+<...>
+Events:
+  Type    Reason          Age   From               Message
+  ----    ------          ----  ----               -------
+  Normal  Scheduled       12m   default-scheduler  Successfully assigned knative-serving/net-istio-webhook-5d97d48d5b-mwkgv to crc-txps5-master-0
+  Normal  AddedInterface  12m   multus             Add eth0 [10.217.0.78/23] from openshift-sdn
+  Normal  AddedInterface  12m   multus             Add net1 [] from knative-serving/istio-cni
+  Normal  Pulled          12m   kubelet            Container image "docker.io/istio/proxyv2:1.10.2" already present on machine
+  Normal  Created         12m   kubelet            Created container istio-validation
+  Normal  Started         12m   kubelet            Started container istio-validation
+  Normal  Pulled          12m   kubelet            Container image "gcr.io/knative-releases/knative.dev/net-istio/cmd/webhook@sha256:49bf045db42aa0bfe124e9c5a5c511595e8fc27bf3a77e3900d9dec2b350173c" already present on machine
+  Normal  Created         12m   kubelet            Created container webhook
+  Normal  Started         12m   kubelet            Started container webhook
+  Normal  Pulled          12m   kubelet            Container image "docker.io/istio/proxyv2:1.10.2" already present on machine
+  Normal  Created         12m   kubelet            Created container istio-proxy
+  Normal  Started         12m   kubelet            Started container istio-proxy
 ```
 
 ### Deploying knative-serving apps
