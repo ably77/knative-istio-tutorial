@@ -27,6 +27,19 @@ istioctl install --set profile=openshift -y
 ```
 As we can see, there is extra configuration necessary for OpenShift Istio deployments because of the use of Security Context Constraints (SCCs) in OpenShift. Istio components require the use of UID 1337 which is reserved for the sidecar proxy component. For this reason in this tutorial we will need to allow the `anyuid` SCC to be used anywhere Istio is used, rather than the default `restricted` SCC.
 
+### Install knative-serving
+For this tutorial we will be deploying knative using the [YAML method](https://knative.dev/docs/admin/install/serving/install-serving-with-yaml/). In the future we can explore using the knative operator in order to deploy and manage knative components
+
+Create knative-serving namespace:
+```
+kubectl create ns knative-serving
+```
+
+Enable istio sidecar container injection on `knative-serving` system namespace.
+```
+kubectl label namespace knative-serving istio-injection=enabled
+```
+
 #### Set `PeerAuthentication` to `PERMISSIVE` on knative-serving namespace
 ```
 cat <<EOF | kubectl apply -f -
@@ -39,19 +52,6 @@ spec:
   mtls:
     mode: PERMISSIVE
 EOF
-```
-
-### Install knative-serving
-For this tutorial we will be deploying knative using the [YAML method](https://knative.dev/docs/admin/install/serving/install-serving-with-yaml/). In the future we can explore using the knative operator in order to deploy and manage knative components
-
-Create knative-serving namespace:
-```
-kubectl create ns knative-serving
-```
-
-Enable istio sidecar container injection on `knative-serving` system namespace.
-```
-kubectl label namespace knative-serving istio-injection=enabled
 ```
 
 Install knative CRDs
