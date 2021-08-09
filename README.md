@@ -70,15 +70,15 @@ Following that, add the anyuid policy to `knative-serving` and deploy the net-is
 oc adm policy add-scc-to-group anyuid system:serviceaccounts:knative-serving
 ```
 
-#### Deploy knative-serving components
+### Deploy knative-serving components
 Install knative CRDs
 ```
-kubectl apply -f https://github.com/knative/serving/releases/download/v0.24.0/serving-crds.yaml
+kubectl create -f https://github.com/knative/serving/releases/download/v0.24.0/serving-crds.yaml
 ```
 
 Install knative-serving
 ```
-kubectl apply -f https://github.com/knative/serving/releases/download/v0.24.0/serving-core.yaml
+kubectl create -f https://github.com/knative/serving/releases/download/v0.24.0/serving-core.yaml
 ```
 
 Check to see that the components have been deployed
