@@ -54,6 +54,23 @@ spec:
 EOF
 ```
 
+#### Additional for OpenShift deployments
+Additionally for OpenShift users, the istio-cni NetworkAttachment must be added to each namespace where we plan to deploy istio-enabled services. This is because CNI on OpenShift is managed by Multus, and it requires a NetworkAttachmentDefinition to be present in the application namespace in order to invoke the istio-cni plugin
+```
+cat <<EOF | oc -n knative-serving create -f -
+apiVersion: "k8s.cni.cncf.io/v1"
+kind: NetworkAttachmentDefinition
+metadata:
+ name: istio-cni
+EOF
+```
+
+Following that, add the anyuid policy to `knative-serving` and deploy the net-istio controller
+```
+oc adm policy add-scc-to-group anyuid system:serviceaccounts:knative-serving
+```
+
+#### Deploy knative-serving components
 Install knative CRDs
 ```
 kubectl apply -f https://github.com/knative/serving/releases/download/v0.24.0/serving-crds.yaml
@@ -87,23 +104,6 @@ Knative uses a shared ingress Gateway to serve all incoming traffic within Knati
 Deploy the knative-istio-controller to integrate istio and knative
 ```
 kubectl apply -f https://github.com/knative/net-istio/releases/download/v0.24.0/net-istio.yaml
-```
-
-#### Install the knative istio controller on OpenShift
-Additionally for OpenShift users, the istio-cni NetworkAttachment must be added to each namespace where we plan to deploy istio-enabled services. This is because CNI on OpenShift is managed by Multus, and it requires a NetworkAttachmentDefinition to be present in the application namespace in order to invoke the istio-cni plugin
-```
-cat <<EOF | oc -n knative-serving create -f -
-apiVersion: "k8s.cni.cncf.io/v1"
-kind: NetworkAttachmentDefinition
-metadata:
- name: istio-cni
-EOF
-```
-
-Following that, add the anyuid policy to `knative-serving` and deploy the net-istio controller
-```
-oc adm policy add-scc-to-group anyuid system:serviceaccounts:knative-serving
-oc apply -f https://github.com/knative/net-istio/releases/download/v0.24.0/net-istio.yaml
 ```
 
 #### Validate
