@@ -10,37 +10,7 @@ The purpose of this tutorial is to walk through the steps to install knative-ser
 
 ## Demo Instructions
 
-### Install knative-serving
-For this tutorial we will be deploying knative using the [YAML method](https://knative.dev/docs/admin/install/serving/install-serving-with-yaml/). In the future we can explore using the knative operator in order to deploy and manage knative components
-
-Install knative CRDs
-```
-kubectl apply -f https://github.com/knative/serving/releases/download/v0.24.0/serving-crds.yaml
-```
-
-Install knative-serving
-```
-kubectl apply -f https://github.com/knative/serving/releases/download/v0.24.0/serving-core.yaml
-```
-
-Check to see that the components have been deployed
-```
-kubectl get pods -n knative-serving
-```
-
-Output should look similar to below
-```
-% kubectl get pods -n knative-serving
-NAME                                     READY   STATUS    RESTARTS   AGE
-activator-dfc4f7578-gr72l                1/1     Running   0          15m
-autoscaler-756797655b-qnpc2              1/1     Running   0          15m
-controller-7bccdf6fdb-tjcxz              1/1     Running   0          15m
-domain-mapping-65fd554865-8sbwc          1/1     Running   0          14m
-domainmapping-webhook-7ff8f59965-zwxlf   1/1     Running   0          14m
-webhook-568c4d697-bzcdz                  1/1     Running   0          14m
-```
-
-### Install Istio
+### First install Istio
 Now that knative-serving components are up, we can move on to deploying Istio. The commands below will guide us through both default and OpenShift install processes
 
 Default Istio install
@@ -77,6 +47,36 @@ spec:
   mtls:
     mode: PERMISSIVE
 EOF
+```
+
+### Install knative-serving
+For this tutorial we will be deploying knative using the [YAML method](https://knative.dev/docs/admin/install/serving/install-serving-with-yaml/). In the future we can explore using the knative operator in order to deploy and manage knative components
+
+Install knative CRDs
+```
+kubectl apply -f https://github.com/knative/serving/releases/download/v0.24.0/serving-crds.yaml
+```
+
+Install knative-serving
+```
+kubectl apply -f https://github.com/knative/serving/releases/download/v0.24.0/serving-core.yaml
+```
+
+Check to see that the components have been deployed
+```
+kubectl get pods -n knative-serving
+```
+
+Output should look similar to below
+```
+% kubectl get pods -n knative-serving
+NAME                                     READY   STATUS    RESTARTS   AGE
+activator-dfc4f7578-gr72l                1/1     Running   0          15m
+autoscaler-756797655b-qnpc2              1/1     Running   0          15m
+controller-7bccdf6fdb-tjcxz              1/1     Running   0          15m
+domain-mapping-65fd554865-8sbwc          1/1     Running   0          14m
+domainmapping-webhook-7ff8f59965-zwxlf   1/1     Running   0          14m
+webhook-568c4d697-bzcdz                  1/1     Running   0          14m
 ```
 
 ### Deploy the knative istio controller to integrate knative with istio
