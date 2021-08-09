@@ -10,8 +10,8 @@ The purpose of this tutorial is to walk through the steps to install knative-ser
 
 ## Demo Instructions
 
-### First install Istio
-Now that knative-serving components are up, we can move on to deploying Istio. The commands below will guide us through both default and OpenShift install processes
+### First step - install Istio!
+The first step that we should do is install Istio on our cluster. The commands below will guide us through both default and OpenShift install processes
 
 Default Istio install
 ```
@@ -19,21 +19,13 @@ kubectl create ns istio-system
 istioctl install --set profile=default -y
 ```
 
-For OpenShift users
+#### For OpenShift users
 ```
 oc new-project istio-system
 oc adm policy add-scc-to-group anyuid system:serviceaccounts:istio-system
 istioctl install --set profile=openshift -y
 ```
 As we can see, there is extra configuration necessary for OpenShift Istio deployments because of the use of Security Context Constraints (SCCs) in OpenShift. Istio components require the use of UID 1337 which is reserved for the sidecar proxy component. For this reason in this tutorial we will need to allow the `anyuid` SCC to be used anywhere Istio is used, rather than the default `restricted` SCC.
-
-#### Using Istio mTLS capabilities
-Since there are some networking communications between knative-serving namespace and the namespace where our services running on, we need additional preparations for mTLS enabled environment.
-
-Enable sidecar container on `knative-serving` system namespace.
-```
-kubectl label namespace knative-serving istio-injection=enabled
-```
 
 #### Set `PeerAuthentication` to `PERMISSIVE` on knative-serving namespace
 ```
@@ -51,6 +43,11 @@ EOF
 
 ### Install knative-serving
 For this tutorial we will be deploying knative using the [YAML method](https://knative.dev/docs/admin/install/serving/install-serving-with-yaml/). In the future we can explore using the knative operator in order to deploy and manage knative components
+
+Enable istio sidecar container injection on `knative-serving` system namespace.
+```
+kubectl label namespace knative-serving istio-injection=enabled
+```
 
 Install knative CRDs
 ```
