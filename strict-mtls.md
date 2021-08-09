@@ -1,11 +1,13 @@
 # Setting up STRICT mtls for knative-serving
 
 ## create httpbin kn service with CLI
+```
 kn service -n default create httpbin \
 --image docker.io/kennethreitz/httpbin \
 --port 80 \
 --env TARGET=httpbin \
 --revision-name=httpbin
+```
 
 ## curl external LB to see if a cert is passed (should be no)
 ```
