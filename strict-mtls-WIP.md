@@ -240,7 +240,7 @@ spec:
  rules:
  - from:
    - source:
-      namespaces: ["httpbin", "knative-serving", "default", "istio-system"]
+      namespaces: ["knative-serving", "default"]
 EOF
 ```
 
