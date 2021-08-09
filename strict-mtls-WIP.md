@@ -196,3 +196,92 @@ As you can see from the `X-Forwarded-Client-Cert` that the mtls is working as ex
 ```
 "X-Forwarded-Client-Cert": "By=spiffe://cluster.local/ns/default/sa/default;Hash=764a17b2e2662930c0887e4b947f58dd512a89b700f75c20f9ce5c30a74f5f7e;Subject=\"\";URI=spiffe://cluster.local/ns/knative-serving/sa/controller"
 ```
+
+## Testing - Lock down your service further
+
+### Set default deny all Istio AuthorizationPolicy
+```
+cat <<EOF | kubectl apply -f -
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: deny-all
+  namespace: default
+spec:
+  {}
+EOF
+```
+
+If you re-run the curl command it should hang, this is because we have by default denied all connections with the `AuthorizationPolicy` above
+```
+% kubectl exec deploy/sleep -n default -- curl -v -H "Host: httpbin.default.example.com" 10.217.5.142/headers
+*   Trying 10.217.5.142:80...
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Connected to 10.217.5.142 (10.217.5.142) port 80 (#0)
+> GET /headers HTTP/1.1
+> Host: httpbin.default.example.com
+> User-Agent: curl/7.78.0-DEV
+> Accept: */*
+> 
+  0     0    0     0    0     0      0      0 --:--:--  0:00:27 --:--:--     0
+```
+
+### Allow default namespace to be accessed by source namespaces
+```
+kubectl apply -f - <<EOF
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+ name: allow
+ namespace: default
+spec:
+ action: ALLOW
+ rules:
+ - from:
+   - source:
+      namespaces: ["httpbin", "knative-serving", "default", "istio-system"]
+EOF
+```
+
+If you re-run the curl command we should be successful
+```
+% kubectl exec deploy/sleep -n default -- curl -v -H "Host: httpbin.default.example.com" 10.217.5.142/headers
+*   Trying 10.217.5.142:80...
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Connected to 10.217.5.142 (10.217.5.142) port 80 (#0)
+> GET /headers HTTP/1.1
+> Host: httpbin.default.example.com
+> User-Agent: curl/7.78.0-DEV
+> Accept: */*
+> 
+{
+  "headers": {
+    "Accept": "*/*", 
+    "Forwarded": "for=10.217.0.88;proto=http, for=127.0.0.6", 
+    "Host": "httpbin.default.example.com", 
+    "K-Proxy-Request": "activator", 
+    "User-Agent": "curl/7.78.0-DEV", 
+    "X-B3-Parentspanid": "04900f328faebbfa", 
+    "X-B3-Sampled": "0", 
+    "X-B3-Spanid": "c19c81e9a174cb61", 
+    "X-B3-Traceid": "853b5d52d5f5ff99cdfe2d296db779ce", 
+    "X-Envoy-Attempt-Count": "1", 
+    "X-Forwarded-Client-Cert": "By=spiffe://cluster.local/ns/default/sa/default;Hash=048a2894dc7e3917d1658e208404892069d19e083bf6cd7b6f8f4942bebfa94b;Subject=\"\";URI=spiffe://cluster.local/ns/knative-serving/sa/controller"
+  }
+}
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200 OK
+< access-control-allow-credentials: true
+< access-control-allow-origin: *
+< content-length: 655
+< content-type: application/json
+< date: Mon, 09 Aug 2021 18:08:49 GMT
+< server: envoy
+< x-envoy-upstream-service-time: 5
+< 
+{ [655 bytes data]
+100   655  100   655    0     0  94845      0 --:--:-- --:--:-- --:--:--  106k
+* Connection #0 to host 10.217.5.142 left intact
+```
