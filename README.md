@@ -110,15 +110,15 @@ oc apply -f https://github.com/knative/net-istio/releases/download/v0.24.0/net-i
 To validate, you can see that the Istio sidecar was injected in the net-istio-webhook pod and would be showing as `2/2` 
 ```
 % kubectl get pods -n knative-serving
-NAME                                    READY   STATUS    RESTARTS   AGE
-activator-67656dcbbb-l26mj              1/1     Running   0          27m
-autoscaler-df6856b64-96gv2              1/1     Running   0          27m
-controller-788796f49d-4xkfd             1/1     Running   0          27m
-domain-mapping-65f58c79dc-78824         1/1     Running   0          27m
-domainmapping-webhook-cc646465c-hv4hx   1/1     Running   0          27m
-net-istio-controller-799fb59fbf-78h6z   1/1     Running   0          20m
-net-istio-webhook-5d97d48d5b-mwkgv      2/2     Running   0          12m
-webhook-859796bc7-cskg4                 1/1     Running   0          27m
+NAME                                     READY   STATUS    RESTARTS   AGE
+activator-dfc4f7578-62c9f                2/2     Running   0          7m32s
+autoscaler-756797655b-tz4c8              2/2     Running   0          5m26s
+controller-7bccdf6fdb-kx5gj              2/2     Running   0          5m48s
+domain-mapping-65fd554865-94kkg          2/2     Running   0          4m58s
+domainmapping-webhook-7ff8f59965-ljqb6   2/2     Running   0          4m23s
+net-istio-controller-799fb59fbf-xtmwh    1/1     Running   0          59s
+net-istio-webhook-5d97d48d5b-g7n6p       2/2     Running   0          59s
+webhook-568c4d697-hzh55                  2/2     Running   0          3m48s
 ```
 
 If you do a describe on the net-istio-webhook pod you can see more detail in the events
