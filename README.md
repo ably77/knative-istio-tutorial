@@ -44,6 +44,11 @@ EOF
 ### Install knative-serving
 For this tutorial we will be deploying knative using the [YAML method](https://knative.dev/docs/admin/install/serving/install-serving-with-yaml/). In the future we can explore using the knative operator in order to deploy and manage knative components
 
+Create knative-serving namespace:
+```
+kubectl create ns knative-serving
+```
+
 Enable istio sidecar container injection on `knative-serving` system namespace.
 ```
 kubectl label namespace knative-serving istio-injection=enabled
@@ -64,16 +69,16 @@ Check to see that the components have been deployed
 kubectl get pods -n knative-serving
 ```
 
-Output should look similar to below
+Output should look similar to below, as you can see the istio sidecar has been injected into each component in the knative-serving namespace, denoted by the 2/2 in each pod. If you want to drill down you can do a `kubectl describe` on the pod to see more details.
 ```
 % kubectl get pods -n knative-serving
 NAME                                     READY   STATUS    RESTARTS   AGE
-activator-dfc4f7578-gr72l                1/1     Running   0          15m
-autoscaler-756797655b-qnpc2              1/1     Running   0          15m
-controller-7bccdf6fdb-tjcxz              1/1     Running   0          15m
-domain-mapping-65fd554865-8sbwc          1/1     Running   0          14m
-domainmapping-webhook-7ff8f59965-zwxlf   1/1     Running   0          14m
-webhook-568c4d697-bzcdz                  1/1     Running   0          14m
+activator-dfc4f7578-62c9f                2/2     Running   0          4m37s
+autoscaler-756797655b-tz4c8              2/2     Running   0          2m31s
+controller-7bccdf6fdb-kx5gj              2/2     Running   0          2m53s
+domain-mapping-65fd554865-94kkg          2/2     Running   0          2m3s
+domainmapping-webhook-7ff8f59965-ljqb6   2/2     Running   0          88s
+webhook-568c4d697-hzh55                  2/2     Running   0          53s
 ```
 
 ### Deploy the knative istio controller to integrate knative with istio
