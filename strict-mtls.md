@@ -111,11 +111,13 @@ EOF
 ```
 
 ## get svc
+```
 % k get svc -n istio-system
 NAME                    TYPE           CLUSTER-IP       EXTERNAL-IP     PORT(S)                                      AGE
 istio-ingressgateway    LoadBalancer   10.104.186.58    34.136.77.209   15021:31110/TCP,80:32068/TCP,443:31988/TCP   140m
 istiod                  ClusterIP      10.104.180.235   <none>          15010/TCP,15012/TCP,443/TCP,15014/TCP        140m
 knative-local-gateway   ClusterIP      10.104.184.118   <none>          80/TCP                                       72m
+```
 
 ## curl the external loadbalancer directly
 ```
