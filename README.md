@@ -40,20 +40,6 @@ Enable istio sidecar container injection on `knative-serving` system namespace.
 kubectl label namespace knative-serving istio-injection=enabled
 ```
 
-#### Set `PeerAuthentication` to `PERMISSIVE` on knative-serving namespace
-```
-cat <<EOF | kubectl apply -f -
-apiVersion: "security.istio.io/v1beta1"
-kind: "PeerAuthentication"
-metadata:
-  name: "default"
-  namespace: "knative-serving"
-spec:
-  mtls:
-    mode: PERMISSIVE
-EOF
-```
-
 #### Additional for OpenShift deployments
 Additionally for OpenShift users, the istio-cni NetworkAttachment must be added to each namespace where we plan to deploy istio-enabled services. This is because CNI on OpenShift is managed by Multus, and it requires a NetworkAttachmentDefinition to be present in the application namespace in order to invoke the istio-cni plugin
 ```
