@@ -9,9 +9,9 @@ The purpose of this tutorial is to walk through the steps to install knative-ser
 - `kn` CLI installed [see Installing kn](https://knative.dev/docs/client/install-kn/)
 
 ## Table of Contents
-[Tutorial #1: Deploying your first Knative Service on Istio](https://github.com/ably77/knative-istio-tutorial#tutorial-1-deploying-your-first-knative-service-on-istio)
-[Next Steps: Setting up STRICT mtls for knative-serving](https://github.com/ably77/knative-istio-tutorial#next-steps---setting-up-strict-mtls-for-knative-serving)
-[Additional Next Steps: Install Gloo Mesh](https://github.com/ably77/knative-istio-tutorial#additional-next-steps---install-gloo-mesh)
+- [Tutorial #1: Deploying your first Knative Service on Istio](https://github.com/ably77/knative-istio-tutorial#tutorial-1-deploying-your-first-knative-service-on-istio)
+- [Next Steps: Setting up STRICT mtls for knative-serving](https://github.com/ably77/knative-istio-tutorial#next-steps---setting-up-strict-mtls-for-knative-serving)
+- [Additional Next Steps: Install Gloo Mesh](https://github.com/ably77/knative-istio-tutorial#additional-next-steps---install-gloo-mesh)
 
 ## Tutorial #1: Deploying your first Knative Service on Istio
 
