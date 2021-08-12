@@ -8,7 +8,10 @@ The purpose of this tutorial is to walk through the steps to install knative-ser
 - Kubernetes cluster up and authenticated to kubectl
 - `kn` CLI installed [see Installing kn](https://knative.dev/docs/client/install-kn/)
 
-## Demo Instructions
+## Table of Contents
+[]
+
+## Tutorial #1: Deploying your first Knative Service on Istio
 
 ### First step - install Istio!
 The first step that we should do is install Istio on our cluster. The commands below will guide us through both default and OpenShift install processes
