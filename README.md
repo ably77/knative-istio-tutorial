@@ -312,7 +312,7 @@ knative-local-gateway   ClusterIP      10.35.242.59    <none>           80/TCP  
 
 Exec into sleep container and curl the knative-local-gateway
 ```
-kubectl exec deploy/sleep -- curl -v -H "Host: hello.default.example.com" 10.35.242.59
+kubectl exec deploy/sleep -n default -- curl -v -H "Host: hello.default.example.com" 10.35.242.59
 ```
 
 The output should look similar to below. Here we can see that the request was served by envoy `x-envoy-upstream-service-time: 2237`
@@ -420,7 +420,12 @@ Congrats! At this point we have successfully
 - Set up a knative revision
 - Split traffic between two revisions of a knative service 
 
-## Next Steps - Install Gloo Mesh
+## Next Steps - Setting up STRICT mtls for knative-serving
+At this point, we have run through our first knative-serving example without explicitly specifying an Istio `PeerAuthentication` policy for mtls. If not defined, Istio by default will configure the destination workloads using `PERMISSIVE` mode. When `PERMISSIVE` mode is enabled, a service can accept both **plain text and mutual TLS traffic**. In order to only allow mutual TLS traffic, the configuration needs to be changed to `STRICT` mode.
+
+[Tutorial #2 - Setting up STRICT mtls for knative-serving](https://github.com/ably77/knative-istio-tutorial/blob/main/strict-mtls.md)
+
+## Additional Next Steps - Install Gloo Mesh
 
 [Gloo Mesh](https://docs.solo.io/gloo-mesh/latest/) is a Kubernetes-native management plane that enables configuration and operational management of multiple heterogeneous service meshes across multiple clusters through a unified API. The Gloo Mesh API integrates with the leading service meshes and abstracts away differences between their disparate API's, allowing users to configure a set of different service meshes through a single API. Gloo Mesh is engineered with a focus on its utility as an operational management tool, providing both graphical and command line UIs, observability features, and debugging tools.
 

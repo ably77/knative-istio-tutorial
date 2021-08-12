@@ -110,6 +110,8 @@ spec:
 EOF
 ```
 
+**NOTE**: It may take a minute for the `PeerAuthentication` policy to propagate across the entire cluster before moving on
+
 ## now curl the external loadbalancer directly
 ```
 % curl -v 34.136.77.209/headers -H "Host: httpbin.default.example.com"                                        
@@ -147,6 +149,12 @@ EOF
 }
 * Connection #0 to host 34.136.77.209 left intact
 * Closing connection 0
+```
+
+## If not deployed, deploy sleep container to run curl commands from
+Deploy sleep app to run curl commands from:
+```
+kubectl create -f https://raw.githubusercontent.com/istio/istio/master/samples/sleep/sleep.yaml -n default
 ```
 
 ## curl from container inside mesh
