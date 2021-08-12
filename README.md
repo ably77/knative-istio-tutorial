@@ -414,7 +414,7 @@ Congrats! At this point we have successfully
 ## Next Steps - Setting up STRICT mtls for knative-serving
 At this point, we have run through our first knative-serving example without explicitly specifying an Istio `PeerAuthentication` policy for mtls. If not defined, Istio by default will configure the destination workloads using `PERMISSIVE` mode. When `PERMISSIVE` mode is enabled, a service can accept both **plain text and mutual TLS traffic**. In order to only allow mutual TLS traffic, the configuration needs to be changed to `STRICT` mode.
 
-[Tutorial #2 - Setting up STRICT mtls for knative-serving](https://github.com/ably77/knative-istio-tutorial/blob/main/strict-mtls.md)
+- [Tutorial #2 - Setting up STRICT mtls for knative-serving](https://github.com/ably77/knative-istio-tutorial/blob/main/strict-mtls.md)
 
 ## Additional Next Steps - Install Gloo Mesh
 
