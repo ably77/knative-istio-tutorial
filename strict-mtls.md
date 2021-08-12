@@ -1,4 +1,5 @@
 # Setting up STRICT mtls for knative-serving
+For this tutorial we will be using a `httpbin` service in the form of a knative service. This will help us more clearly identify whether mtls is working as expected by looking for the envoy `X-Forwarded-Client-Cert` in the headers.
 
 ## create httpbin kn service with CLI
 ```
